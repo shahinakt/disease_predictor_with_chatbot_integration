@@ -1,59 +1,65 @@
-# Introduction to GitHub
+# Early Disease Predictor MVP
 
-<!-- ![](https://github.com/shxynh/skills-introduction-to-githhub/actions/workflows/0-start-exercise.yml/badge.svg) -->
-![](https://github.com/shxynh/skills-introduction-to-githhub/actions/workflows/1-create-a-branch.yml/badge.svg)
-![](https://github.com/shxynh/skills-introduction-to-githhub/actions/workflows/2-commit-a-file.yml/badge.svg)
-![](https://github.com/shxynh/skills-introduction-to-githhub/actions/workflows/3-open-a-pull-request.yml/badge.svg)
-![](https://github.com/shxynh/skills-introduction-to-githhub/actions/workflows/4-merge-your-pull-request.yml/badge.svg)
+This is a minimal viable product (MVP) for an early disease prediction tool. It allows users to register/login, input symptoms for disease prediction, handle follow-up questions, generate PDF reports, extract text from prescription images via OCR, and interact with a chatbot (proxied to Gemini). It includes sensitive handling for mental-health symptoms.
 
-_Get started using GitHub in less than an hour._
+## Safety Notes
+- This is a **screening/triage tool only**, not a diagnostic or clinical tool. It should not replace professional medical advice.
+- For mental-health concerns (e.g., depression, anxiety, suicidal_ideation), the system escalates with empathetic messages, crisis resources, and disclaimers.
+- If escalation is triggered, users are prompted to contact emergency services. The system never provides instructions for self-harm.
 
-## Welcome
+## Features
+- User authentication (JWT-based).
+- Symptom input and disease prediction using a pre-trained ML model.
+- Follow-up Q&A to refine predictions.
+- PDF report generation.
+- OCR for prescription images.
+- Chatbot proxy to Gemini (with escalation checks for sensitive keywords).
+- Crisis resources configurable per country (e.g., in `backend/constants/crisis_resources.py`).
 
-People use GitHub to build some of the most advanced technologies in the world. Whether you’re visualizing data or building a new game, there’s a whole community and set of tools on GitHub that can help you do it even better. GitHub Skills’ “Introduction to GitHub” exercise guides you through everything you need to start contributing in less than an hour.
+## Setup Instructions
+1. **System Dependencies**:
+   - Install Python 3.10+.
+   - Install Tesseract OCR: On Ubuntu, run `sudo apt-get install tesseract-ocr`. On macOS, use `brew install tesseract`.
+   
+2. **Backend Setup**:
+   - Create a virtual environment: `python -m venv venv && source venv/bin/activate` (or `venv\Scripts\activate` on Windows).
+   - Install dependencies: `pip install -r backend/requirements.txt`.
+   - Copy `.env.example` to `.env` and set the values:
+     ```
+     DATABASE_URL=sqlite:///./db.sqlite3  # For SQLite; change for other DBs
+     SECRET_KEY=change_me  # Generate a secure key, e.g., via `openssl rand -hex 32`
+     ACCESS_TOKEN_EXPIRE_MINUTES=60
+     GEMINI_API_KEY=your_gemini_key_here  # Required for chatbot
+     FRONTEND_URL=http://localhost:5173  # For CORS
+     CRISIS_DEFAULT_COUNTRY=IN  # Default country code (e.g., IN for India)
+     ESCALATION_CONFIDENCE=0.6  # Threshold for mental-health escalation
+     ```
+   - Place the ML model: Run `ml/train_symptom_model.ipynb` to generate `backend/ml_models/symptom_model.pkl` from sample data in `backend/data/symptoms.csv`.
+   - Run the backend: `uvicorn backend.main:app --reload` or use `make run`.
+   - Access OpenAPI docs at `http://localhost:8000/docs`.
 
-- **Who is this for**: New developers, new GitHub users, and students.
-- **What you'll learn**: We'll introduce repositories, branches, commits, and pull requests.
-- **What you'll build**: We'll make a short Markdown file you can use as your [profile README](https://docs.github.com/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme).
-- **Prerequisites**: None. This exercise is a great introduction for your first day on GitHub.
-- **How long**: This exercise takes less than one hour to complete.
+3. **Frontend Setup**:
+   - Navigate to `frontend/`: `cd frontend`.
+   - Install dependencies: `npm install`.
+   - Run the dev server: `npm run dev`. It will run on `http://localhost:5173`.
+   - The frontend communicates with the backend at `http://localhost:8000`.
 
-In this exercise, you will:
+4. **Docker Setup** (Optional for local dev):
+   - Build and run: `docker-compose up --build`.
+   - This spins up the backend and frontend containers.
 
-1. Create a branch
-2. Commit a file
-3. Open a pull request
-4. Merge your pull request
+5. **Demo User**:
+   - Register a user via the frontend (e.g., email: demo@example.com, password: TestPass123).
+   - Do not hardcode credentials; always use the registration flow.
 
-### How to start this exercise
+6. **Localizing Crisis Resources**:
+   - Edit `backend/constants/crisis_resources.py` to add country-specific hotlines (e.g., for "US": emergency number 911).
+   - The system uses the `CRISIS_DEFAULT_COUNTRY` env var or infers from user input (e.g., in symptom locale).
 
-1. Right-click **Copy Exercise** and open the link in a new tab.
+## Running Tests
+- Backend: Run unit tests with `pytest backend/tests/test_predictor.py`.
 
-   <a id="copy-exercise">
-      <img src="https://img.shields.io/badge/📠_Copy_Exercise-AAA" height="25pt"/>
-   </a>
-
-2. In the new tab, most of the prompts will automatically fill in for you.
-   - For owner, choose your personal account or an organization to host the repository.
-   - We recommend creating a public repository, as private repositories will [use Actions minutes](https://docs.github.chttps://github.com/shxynh/skills-introduction-to-githhub/billing/managing-billing-for-github-actions/about-billing-for-github-actions).
-   - Scroll down and click the **Create repository** button at the bottom of the form.
-
-3. After your new repository is created, wait about 20 seconds for the exercise to be prepared and buttons updated. You will continue working from your copy of the exercise.
-   - The **Copy Exercise** button will deactivate, changing to gray.
-   - The **Start Exercise** button will activate, changing to green.
-   - You will likely need to refresh the page.
-
-4. Click **Start Exercise**. Follow the step-by-step instructions and feedback will be provided as you progress.
-
-   <a id="start-exercise" href="https://github.com/shahinakt/Early_disease_predictor/issues/1" href="https://github.com/shxynh/skills-introduction-to-githhub/issues/1">
-      <img src="https://img.shields.io/badge/🚀_Start_Exercise-008000" height="25pt"/>
-   </a>
-
-> [!IMPORTANT]
-> The **Start Exercise** button will activate after copying the repository. You will probably need to refresh the page.
-
----
-
-Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/introduction-to-github) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
-
-&copy; 2024 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+## Limitations
+- The ML model is a toy example; train it with real data for accuracy.
+- Chatbot history is in-memory and resets on server restart.
+- This is not for production; add proper error handling and scaling as needed.

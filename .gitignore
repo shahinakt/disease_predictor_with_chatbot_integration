@@ -35,3 +35,10 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+__pycache__/
+venv/
+node_modules/
+*.pyc
+*.pkl  # Add if needed, but we're including it as a placeholder
+db.sqlite3
+.env
