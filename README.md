@@ -1,4 +1,4 @@
-# Early Disease Predictor MVP
+# Disease Predictor With Chatbot Integration MVP
 
 This is a minimal viable product (MVP) for an early disease prediction tool. It allows users to register/login, input symptoms for disease prediction, handle follow-up questions, generate PDF reports, extract text from prescription images via OCR, and interact with a chatbot (proxied to Gemini). It includes sensitive handling for mental-health symptoms.
 
