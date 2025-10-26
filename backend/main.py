@@ -1,34 +1,36 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import auth_route, symptom_routes, report_routes, ocr_routes, chat_routes
-from database import engine  # For DB initialization
-from sqlmodel import SQLModel
-import os
+from .database import Base, engine
+from .routes import auth_route, symptom_routes, report_routes, ocr_routes, chat_routes
 
-app = FastAPI(title="Disease Predictor with Chatbot Integration")
+# Create all database tables
+Base.metadata.create_all(bind=engine)
 
-# CORS setup
-# Build CORS origins list from FRONTEND_URL if present
-frontend_url = os.environ.get("FRONTEND_URL")
-origins = [frontend_url.rstrip("/")] if frontend_url else ["*"]
+app = FastAPI(
+    title="Disease Predictor API",
+    description="disease prediction and health monitoring system",
+    version="1.0.0"
+)
+
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Frontend URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Include routers
-app.include_router(auth_route.router, prefix="/auth", tags=["auth"])
-app.include_router(symptom_routes.router, prefix="/predict", tags=["predict"])
-app.include_router(report_routes.router, prefix="/report", tags=["report"])
-app.include_router(ocr_routes.router, prefix="/ocr", tags=["ocr"])
-app.include_router(chat_routes.router, prefix="/chat", tags=["chat"])
+app.include_router(auth_route.router)
+app.include_router(symptom_routes.router)
+app.include_router(report_routes.router)
+app.include_router(ocr_routes.router)
+app.include_router(chat_routes.router)
 
-@app.on_event("startup")
-def on_startup():
-    SQLModel.metadata.create_all(engine)  # Create DB tables
+@app.get("/")
+def read_root():
+    return {"message": "Disease Predictor API is running!"}
 
 if __name__ == "__main__":
     import uvicorn

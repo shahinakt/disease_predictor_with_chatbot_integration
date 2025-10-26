@@ -1,7 +1,11 @@
-from sqlmodel import SQLModel, Field
-from pydantic import EmailStr
+from sqlalchemy import Column, Integer, String
+from ..database import Base
 
-class User(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    email: EmailStr = Field(unique=True)
-    hashed_password: str
+class User(Base):
+    __tablename__ = "user"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+    

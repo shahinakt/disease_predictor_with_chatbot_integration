@@ -1,9 +1,9 @@
 symptoms,disease
-fever,cough,flu
-headache,fatigue,cold
-sadness,insomnia,depression
-anxiety,rapid_heartbeat,anxiety
-fever,cough,shortness_of_breath,covid
-insomnia,nightmares,ptsd
-substance_abuse,withdrawal_symptoms,substance_abuse
-persistent_sadness,suicidal_ideations,suicidal_ideation
+"fever,cough",flu
+"headache,fatigue",cold
+"sadness,insomnia",depression
+"anxiety,rapid_heartbeat",anxiety
+"fever,cough,shortness_of_breath",covid
+"insomnia,nightmares",ptsd
+"substance_abuse,withdrawal_symptoms",substance_abuse
+"persistent_sadness,suicidal_ideations",suicidal_ideation

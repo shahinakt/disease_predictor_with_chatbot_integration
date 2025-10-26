@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
-from utils.pdf_generator import generate_report
+from ..utils.pdf_generator import generate_report
 
 router = APIRouter()
 
 
 @router.get("/download")
 def download_report():
-    # For now, produce a demo report. Later this should accept a user_id or payload.
+    
     sample_user = {
         "user": "Demo User",
         "symptoms": "fever, cough",

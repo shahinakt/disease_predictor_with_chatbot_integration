@@ -1,4 +1,4 @@
-from constants.crisis_resources import CRISIS_RESOURCES
+from ..constants.crisis_resources import CRISIS_RESOURCES
 
 class FollowupEngine:
     def handle_followup(self, answers: dict):

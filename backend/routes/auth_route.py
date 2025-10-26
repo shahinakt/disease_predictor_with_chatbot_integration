@@ -1,18 +1,35 @@
 from fastapi import APIRouter, Depends, HTTPException
-from services import auth_service
-from sqlmodel import Session
-from database import engine
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from ..database import get_db
+from ..services import auth_service
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 
-def get_db():
-    with Session(engine) as session:
-        yield session
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
 @router.post("/register")
-def register(email: str, password: str, db=Depends(get_db)):
-    return auth_service.register(db, email, password)
+def register(request: RegisterRequest, db: Session = Depends(get_db)):
+    try:
+        return auth_service.register(db, request.email, request.password)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        print(f"Register route error: {str(e)}")  # Debug log
+        raise HTTPException(status_code=500, detail="Registration failed")
 
 @router.post("/login")
-def login(email: str, password: str, db=Depends(get_db)):
-    return auth_service.login(db, email, password)
+def login(request: LoginRequest, db: Session = Depends(get_db)):
+    try:
+        return auth_service.login(db, request.email, request.password)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        print(f"Login route error: {str(e)}")  # Debug log
+        raise HTTPException(status_code=500, detail="Login failed")
