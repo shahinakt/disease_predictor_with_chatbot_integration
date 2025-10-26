@@ -42,3 +42,6 @@ node_modules/
 *.pkl  # Add if needed, but we're including it as a placeholder
 db.sqlite3
 .env
+
+# Local database file created during development
+database.db
